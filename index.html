@@ -391,24 +391,22 @@ const FG = [
 ];
 
 // ══════════════════════════════════
-// SCORES — salvos na URL (#hash)
-// Funciona em qualquer browser/host
+// SCORES — localStorage (GitHub Pages)
 // ══════════════════════════════════
+const STORE_KEY = 'larys25cup_scores';
 let SC = {};
 
-function loadFromHash() {
-  try {
-    const h = location.hash.slice(1);
-    if (h) SC = JSON.parse(decodeURIComponent(h));
-  } catch { SC = {}; }
+function loadSC() {
+  try { SC = JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); }
+  catch { SC = {}; }
 }
 
 function saveToHash() {
-  const encoded = encodeURIComponent(JSON.stringify(SC));
-  history.replaceState(null, '', '#' + encoded);
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(SC)); }
+  catch(e) { console.warn('storage error', e); }
 }
 
-loadFromHash();
+loadSC();
 
 const getSc = id => SC[id] || null;
 function getW(id, t1, t2) {
@@ -660,9 +658,10 @@ function renderAll() {
   renderFinalFem('f-final');
   const sA=calcS(['A1','A2','A3','A4','A5'],MG);
   const sB=calcS(['B1','B2','B3','B4','B5'],MG);
+  const sF=calcS(['D1','D2','D3','D4'],FG);
   document.getElementById('cl-a').innerHTML=stHTML(sA);
   document.getElementById('cl-b').innerHTML=stHTML(sB);
-  document.getElementById('cl-f').innerHTML=stHTML(calcS(['D1','D2','D3','D4'],FG));
+  document.getElementById('cl-f').innerHTML=stHTML(sF);
   renderResult();
 }
 
